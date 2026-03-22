@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>EcoVision AI — Panel Admin</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+</head>
+
+<body>
+
+    <!-- ── NAVBAR ADMIN ── -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="logo-ring">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="#EF9F27"
+                        stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </div>
+            <div>
+                <span class="brand-name">EcoVision <span>Admin</span></span>
+                <span class="brand-sub">Panel de administración</span>
+            </div>
+        </div>
+        <div class="nav-links" style="display:none">
+            <a href="#sec-stats" onclick="irA('sec-stats')">Estadísticas</a>
+            <a href="#sec-tickets" onclick="irA('sec-tickets')">Tickets</a>
+            <a href="#sec-usuarios" onclick="irA('sec-usuarios')">Usuarios</a>
+            <a href="#sec-config" onclick="irA('sec-config')">Configuración</a>
+        </div>
+        <a href="/logout" class="nav-logout">
+            <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+                <path d="M13 3h4v14h-4M9 14l4-4-4-4M3 10h10" stroke="currentColor" stroke-width="1.3"
+                    stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            Salir
+        </a>
+    </nav>
+
+    <main class="main">
+
+        <!-- Mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <!-- ── STATS GLOBALES ── -->
+        <section id="sec-stats">
+            <div class="section-title">Estadísticas globales</div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="8" r="4" stroke="#52b788" stroke-width="1.4" />
+                            <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="#52b788" stroke-width="1.4"
+                                stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <div class="stat-num">{{ stats.usuarios }}</div>
+                    <div class="stat-lbl">Usuarios registrados</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="9" stroke="#378ADD" stroke-width="1.4" />
+                            <path d="M8 12l3 3 5-5" stroke="#378ADD" stroke-width="1.4" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <div class="stat-num">{{ stats.clasificaciones }}</div>
+                    <div class="stat-lbl">Clasificaciones totales</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon amber">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                            <rect x="3" y="3" width="18" height="18" rx="3" stroke="#EF9F27" stroke-width="1.4" />
+                            <path d="M8 12h8M8 8h8M8 16h5" stroke="#EF9F27" stroke-width="1.4" stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <div class="stat-num amber">{{ stats.tickets_abiertos }}</div>
+                    <div class="stat-lbl">Tickets abiertos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon {{ 'error' if mantenimiento else 'muted' }}">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                            <path
+                                d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"
+                                stroke="{{ '#f4845f' if mantenimiento else '#7aaa8f' }}" stroke-width="1.4"
+                                stroke-linecap="round" />
+                        </svg>
+                    </div>
+                    <div class="stat-num {{ 'error' if mantenimiento else 'muted' }}">
+                        {{ 'ON' if mantenimiento else 'OFF' }}
+                    </div>
+                    <div class="stat-lbl">Modo mantenimiento</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── TICKETS ── -->
+        <section id="sec-tickets">
+            <div class="section-title">Gestión de tickets
+                <span class="count-badge">{{ tickets|length }}</span>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filtros">
+                <button class="filtro activo" data-estado="todos" onclick="filtrarTickets(this)">Todos</button>
+                <button class="filtro" data-estado="abierto" onclick="filtrarTickets(this)">Abiertos</button>
+                <button class="filtro" data-estado="en_proceso" onclick="filtrarTickets(this)">En proceso</button>
+                <button class="filtro" data-estado="resuelto" onclick="filtrarTickets(this)">Resueltos</button>
+            </div>
+
+            {% if tickets %}
+            <div class="tickets-lista" id="tickets-lista">
+                {% for t in tickets %}
+                <div class="ticket-card" data-estado="{{ t.estado }}">
+                    <div class="ticket-top">
+                        <div class="ticket-id-tipo">
+                            <span class="ticket-id">#{{ '%03d' % t.id }}</span>
+                            <span class="ticket-tipo">{{ t.tipo }}</span>
+                        </div>
+                        <div class="ticket-badges">
+                            <span class="badge badge-{{ t.prior_color }}">{{ t.prior_label }}</span>
+                            <span class="badge badge-{{ t.estado_color }}">{{ t.estado_label }}</span>
+                        </div>
+                    </div>
+                    <div class="ticket-desc">{{ t.descripcion }}</div>
+                    <div class="ticket-footer">
+                        <span class="ticket-usuario">👤 {{ t.usuario }}</span>
+                        <span class="ticket-fecha">{{ t.fecha_fmt }}</span>
+                    </div>
+                    <!-- Acciones -->
+                    <div class="ticket-acciones">
+                        {% if t.estado == 'abierto' %}
+                        <form action="/admin/tickets/{{ t.id }}/estado" method="POST" style="display:inline">
+                            <input type="hidden" name="estado" value="en_proceso">
+                            <button type="submit" class="btn-accion amber">▶ En proceso</button>
+                        </form>
+                        {% endif %}
+                        {% if t.estado in ['abierto', 'en_proceso'] %}
+                        <form action="/admin/tickets/{{ t.id }}/estado" method="POST" style="display:inline">
+                            <input type="hidden" name="estado" value="resuelto">
+                            <button type="submit" class="btn-accion green">✓ Resolver</button>
+                        </form>
+                        {% endif %}
+                        {% if t.estado == 'resuelto' %}
+                        <form action="/admin/tickets/{{ t.id }}/estado" method="POST" style="display:inline">
+                            <input type="hidden" name="estado" value="cerrado">
+                            <button type="submit" class="btn-accion muted">✕ Cerrar</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="vacio">
+                <div class="vacio-icon">🎫</div>
+                <p>No hay tickets registrados aún</p>
+            </div>
+            {% endif %}
+        </section>
+
+        <!-- ── USUARIOS ── -->
+        <section id="sec-usuarios">
+            <div class="section-title">Usuarios registrados
+                <span class="count-badge">{{ usuarios|length }}</span>
+            </div>
+            <div class="tabla-wrap">
+                <table class="tabla-usuarios">
+                    <thead>
+                        <tr>
+                            <th>Usuario</th>
+                            <th>Email</th>
+                            <th>Ciudad</th>
+                            <th>Clasif.</th>
+                            <th>Registro</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for u in usuarios %}
+                        <tr>
+                            <td class="td-usuario">
+                                <div class="user-avatar-sm">{{ u.usuario[0]|upper }}</div>
+                                {{ u.usuario }}
+                            </td>
+                            <td class="td-muted">{{ u.email }}</td>
+                            <td class="td-muted">{{ u.ciudad or '—' }}</td>
+                            <td class="td-green">{{ u.clasificaciones }}</td>
+                            <td class="td-muted">
+                                {% if u.creado_en %}
+                                {{ u.creado_en.strftime('%d %b %Y') if u.creado_en else '—' }}
+                                {% else %}—{% endif %}
+                            </td>
+                            <td>
+                                <form action="/admin/usuarios/{{ u.id }}/eliminar" method="POST"
+                                    onsubmit="return confirm('¿Eliminar al usuario {{ u.usuario }}? Esta acción no se puede deshacer.')">
+                                    <button type="submit" class="btn-eliminar">🗑 Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" style="text-align:center;color:var(--eco-muted);padding:2rem">Sin usuarios
+                                registrados</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ── CONFIGURACIÓN ── -->
+        <section id="sec-config">
+            <div class="section-title">Configuración del sistema</div>
+            <div class="config-grid">
+
+                <div class="config-card">
+                    <div class="config-info">
+                        <div class="config-titulo">Modo mantenimiento</div>
+                        <div class="config-desc">
+                            Cuando está activo, los usuarios ven una página de mantenimiento
+                            en lugar de la aplicación.
+                        </div>
+                    </div>
+                    <form action="/admin/mantenimiento" method="POST">
+                        <button type="submit" class="btn-toggle {{ 'activo' if mantenimiento else '' }}">
+                            {{ 'Desactivar' if mantenimiento else 'Activar' }}
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+</body>
+
+</html>

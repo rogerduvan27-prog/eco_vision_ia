@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>EcoVision AI — Mi Perfil</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/perfil.css') }}">
+</head>
+
+<body>
+
+    <!-- ── NAVBAR ── -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="logo-ring">
+                <svg width="18" height="18" viewBox="0 0 30 30" fill="none">
+                    <circle cx="15" cy="15" r="12" stroke="#52b788" stroke-width="1.5" />
+                    <path d="M15 7 C11 10 9 13 11 17 C13 20 17 20 19 17 C21 13 19 10 15 7Z" fill="#52b788"
+                        opacity="0.85" />
+                </svg>
+            </div>
+            <span class="brand-name">EcoVision <span>AI</span></span>
+        </div>
+        <div class="nav-links" style="display:none">
+            <a href="/dashboard">menu</a>
+            <a href="/clasificador">Clasificar</a>
+            <a href="/precios">Precios</a>
+            <a href="/mapa">Mapa</a>
+            <a href="/historial">Historial</a>
+        </div>
+        <a href="/dashboard" class="nav-back">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                <path d="M12 5l-5 5 5 5" stroke="#52b788" stroke-width="1.3" stroke-linecap="round" />
+            </svg>
+            <span>Volver</span>
+        </a>
+    </nav>
+
+    <!-- ── CONTENIDO ── -->
+    <main class="main">
+
+        <!-- Mensajes flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="flash flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <!-- Columna izquierda -->
+        <aside class="sidebar">
+
+            <!-- Avatar -->
+            <div class="avatar-section">
+                <form action="/perfil/avatar" method="POST" enctype="multipart/form-data" id="form-avatar">
+                    <div class="avatar-wrap">
+                        {% if usuario.avatar %}
+                        <img src="{{ url_for('static', filename='uploads/' + usuario.avatar) }}" alt="Avatar"
+                            class="avatar-img">
+                        {% else %}
+                        <div class="avatar-initials">{{ usuario.usuario[0]|upper }}</div>
+                        {% endif %}
+                        <label for="input-avatar" class="avatar-edit">
+                            <svg width="11" height="11" viewBox="0 0 20 20" fill="none">
+                                <path d="M14 3l3 3-10 10H4v-3L14 3z" stroke="#0a1a12" stroke-width="1.3"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        </label>
+                        <input type="file" id="input-avatar" name="avatar" accept="image/*" style="display:none"
+                            onchange="document.getElementById('form-avatar').submit()">
+                    </div>
+                </form>
+                <h2 class="sidebar-name">{{ usuario.usuario }}</h2>
+                <p class="sidebar-email">{{ usuario.email }}</p>
+                <div class="sidebar-ciudad">
+                    <svg width="12" height="12" viewBox="0 0 20 20" fill="none">
+                        <circle cx="10" cy="9" r="4" stroke="#7aaa8f" stroke-width="1.2" />
+                        <path d="M10 2C6.7 2 4 4.7 4 8c0 4.7 6 10 6 10s6-5.3 6-10c0-3.3-2.7-6-6-6z" stroke="#7aaa8f"
+                            stroke-width="1.2" />
+                    </svg>
+                    {{ usuario.ciudad or 'Sin ciudad' }}
+                </div>
+                <p class="sidebar-fecha">Miembro desde {{ usuario.creado_en }}</p>
+            </div>
+
+            <!-- Resumen stats -->
+            <div class="stats-box">
+                <div class="stats-title">Resumen</div>
+                <div class="stat-row">
+                    <span>Clasificados</span>
+                    <span class="stat-val">{{ stats.clasificados }}</span>
+                </div>
+                <div class="stat-row">
+                    <span>Reciclados</span>
+                    <span class="stat-val">{{ stats.kg }} kg</span>
+                </div>
+                <div class="stat-row last">
+                    <span>Materiales</span>
+                    <span class="stat-val">{{ stats.materiales }} tipos</span>
+                </div>
+            </div>
+
+            <!-- Logout -->
+            <a href="/logout" class="logout-btn">
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+                    <path d="M13 3h4v14h-4M9 14l4-4-4-4M3 10h10" stroke="#f4845f" stroke-width="1.3"
+                        stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                Cerrar sesión
+            </a>
+
+        </aside>
+
+        <!-- Columna derecha -->
+        <section class="content">
+
+            <!-- Insignias -->
+            <div class="section-block">
+                <div class="section-label">Logros ecológicos</div>
+                <div class="insignias-grid">
+
+                    <div class="insignia {{ 'activa' if stats.clasificados >= 5 else 'bloqueada' }}">
+                        <div class="insignia-emoji">🌱</div>
+                        <div class="insignia-nombre">Novato</div>
+                        <div class="insignia-req">5+ clasif.</div>
+                    </div>
+
+                    <div class="insignia {{ 'activa amber' if stats.clasificados >= 20 else 'bloqueada' }}">
+                        <div class="insignia-emoji">♻️</div>
+                        <div class="insignia-nombre">Reciclador</div>
+                        <div class="insignia-req">20+ clasif.</div>
+                    </div>
+
+                    <div class="insignia {{ 'activa blue' if stats.clasificados >= 50 else 'bloqueada' }}">
+                        <div class="insignia-emoji">🌍</div>
+                        <div class="insignia-nombre">Guardián</div>
+                        <div class="insignia-req">50+ clasif.</div>
+                    </div>
+
+                    <div class="insignia {{ 'activa gold' if stats.clasificados >= 100 else 'bloqueada' }}">
+                        <div class="insignia-emoji">⭐</div>
+                        <div class="insignia-nombre">Experto</div>
+                        <div class="insignia-req">100+ clasif.</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Formulario edición -->
+            <div class="section-block">
+                <div class="section-label">Editar información</div>
+                <form action="/perfil/actualizar" method="POST" novalidate>
+
+                    <div class="form-grid">
+
+                        <div class="field">
+                            <label>Ciudad</label>
+                            <div class="input-wrap">
+                                <svg class="input-icon" viewBox="0 0 20 20" fill="none">
+                                    <circle cx="10" cy="9" r="4" stroke="currentColor" stroke-width="1.2" />
+                                    <path d="M10 2C6.7 2 4 4.7 4 8c0 4.7 6 10 6 10s6-5.3 6-10c0-3.3-2.7-6-6-6z"
+                                        stroke="currentColor" stroke-width="1.2" />
+                                </svg>
+                                <input type="text" name="ciudad" value="{{ usuario.ciudad or '' }}"
+                                    placeholder="Tu ciudad">
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label>Nueva contraseña</label>
+                            <div class="input-wrap">
+                                <svg class="input-icon" viewBox="0 0 20 20" fill="none">
+                                    <rect x="5" y="9" width="10" height="8" rx="1.5" stroke="currentColor"
+                                        stroke-width="1.3" />
+                                    <path d="M7 9V7a3 3 0 0 1 6 0v2" stroke="currentColor" stroke-width="1.3"
+                                        stroke-linecap="round" />
+                                </svg>
+                                <input type="password" name="password" placeholder="Dejar vacío para no cambiar"
+                                    id="new-pw" oninput="evalPw(this)">
+                                <button type="button" class="toggle-pw" onclick="togglePw('new-pw', this)">
+                                    <svg viewBox="0 0 20 20" fill="none" width="14" height="14">
+                                        <path d="M2 10s3-5 8-5 8 5 8 5-3 5-8 5-8-5-8-5z" stroke="currentColor"
+                                            stroke-width="1.3" />
+                                        <circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.3" />
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="strength-bar">
+                                <div class="seg" id="ps1"></div>
+                                <div class="seg" id="ps2"></div>
+                                <div class="seg" id="ps3"></div>
+                                <div class="seg" id="ps4"></div>
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label>Confirmar contraseña</label>
+                            <div class="input-wrap">
+                                <svg class="input-icon" viewBox="0 0 20 20" fill="none">
+                                    <rect x="5" y="9" width="10" height="8" rx="1.5" stroke="currentColor"
+                                        stroke-width="1.3" />
+                                    <path d="M7 9V7a3 3 0 0 1 6 0v2" stroke="currentColor" stroke-width="1.3"
+                                        stroke-linecap="round" />
+                                </svg>
+                                <input type="password" name="confirmar" placeholder="Repite la nueva contraseña"
+                                    id="confirm-pw" oninput="checkMatch()">
+                            </div>
+                            <span class="field-hint" id="hint-match"></span>
+                        </div>
+
+                        <div class="field btn-field">
+                            <button type="submit" class="btn-save">Guardar cambios</button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="{{ url_for('static', filename='js/perfil.js') }}"></script>
+</body>
+
+</html>

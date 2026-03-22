@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoVision AI — Mantenimiento</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a1a12;
+            --card: #112318;
+            --lime: #52b788;
+            --text: #eaf6ee;
+            --muted: #7aaa8f;
+            --amber: #EF9F27
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            text-align: center
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 2px solid var(--amber);
+            background: rgba(239, 159, 39, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            animation: pulse 2s ease-in-out infinite
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(239, 159, 39, 0)
+            }
+
+            50% {
+                box-shadow: 0 0 0 12px rgba(239, 159, 39, 0.08)
+            }
+        }
+
+        h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 8px
+        }
+
+        h1 span {
+            color: var(--amber)
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(239, 159, 39, 0.1);
+            border: 1px solid rgba(239, 159, 39, 0.3);
+            border-radius: 20px;
+            padding: 5px 14px;
+            font-size: 12px;
+            color: var(--amber);
+            margin-bottom: 1.5rem
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--amber);
+            animation: blink 1.2s ease-in-out infinite
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.3
+            }
+        }
+
+        p {
+            font-size: 14px;
+            color: var(--muted);
+            max-width: 400px;
+            line-height: 1.6;
+            margin-bottom: 2rem
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid rgba(239, 159, 39, 0.15);
+            border-radius: 16px;
+            padding: 1.5rem;
+            max-width: 360px;
+            width: 100%
+        }
+
+        .card-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--amber);
+            margin-bottom: 12px
+        }
+
+        .card p {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 0;
+            text-align: left
+        }
+
+        .footer {
+            margin-top: 2rem;
+            font-size: 11px;
+            color: rgba(122, 170, 143, 0.4)
+        }
+    </style>
+</head>
+
+<body>
+    <div class="logo">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+            <path
+                d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"
+                stroke="#EF9F27" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
+    </div>
+
+    <div class="badge">
+        <div class="dot"></div>En mantenimiento
+    </div>
+
+    <h1>EcoVision <span>AI</span></h1>
+    <p>Estamos realizando mejoras para ofrecerte una mejor experiencia. Vuelve pronto, ¡estaremos de regreso en poco
+        tiempo!</p>
+
+    <div class="card">
+        <div class="card-title">¿Por qué estamos en mantenimiento?</div>
+        <p>Nuestro equipo está trabajando en actualizaciones y mejoras del sistema para garantizar el mejor servicio de
+            clasificación de residuos.</p>
+    </div>
+
+    <p class="footer">EcoVision AI © 2024 — Proyecto universitario</p>
+</body>
+
+</html>

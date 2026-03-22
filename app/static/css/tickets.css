@@ -1,0 +1,573 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap');
+
+:root {
+    --eco-bg: #0a1a12;
+    --eco-card: #112318;
+    --eco-surface: #162e1e;
+    --eco-border: rgba(82, 183, 136, 0.18);
+    --eco-green: #2d6a4f;
+    --eco-lime: #52b788;
+    --eco-bright: #95d5b2;
+    --eco-pale: #d8f3dc;
+    --eco-text: #eaf6ee;
+    --eco-muted: #7aaa8f;
+    --eco-error: #f4845f;
+    --eco-amber: #EF9F27;
+    --eco-blue: #378ADD;
+    --transition: 0.22s ease;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--eco-bg);
+    color: var(--eco-text);
+    min-height: 100vh;
+    padding-bottom: 5rem;
+}
+
+/* ── Navbar ── */
+.navbar {
+    background: var(--eco-card);
+    border-bottom: 1px solid var(--eco-border);
+    padding: 13px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-ring {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1.5px solid var(--eco-lime);
+    background: rgba(45, 106, 79, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.brand-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--eco-text);
+}
+
+.brand-name span {
+    color: var(--eco-lime);
+}
+
+.nav-links {
+    display: none;
+    align-items: center;
+    gap: 22px;
+}
+
+.nav-links a {
+    font-size: 13px;
+    color: var(--eco-muted);
+    font-weight: 500;
+    padding: 4px 0;
+    border-bottom: 2px solid transparent;
+    transition: color var(--transition);
+}
+
+.nav-links a:hover {
+    color: var(--eco-bright);
+}
+
+.nav-links a.active {
+    color: var(--eco-lime);
+    border-bottom-color: var(--eco-lime);
+}
+
+.nav-back {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--eco-lime);
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background: rgba(82, 183, 136, 0.08);
+    border: 1px solid var(--eco-border);
+    transition: background var(--transition);
+}
+
+.nav-back:hover {
+    background: rgba(82, 183, 136, 0.15);
+}
+
+/* ── Main ── */
+.main {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 1.5rem 1.2rem;
+    animation: fadeUp 0.4s ease both;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── Header ── */
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.2rem;
+}
+
+.page-header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--eco-text);
+    margin-bottom: 3px;
+}
+
+.page-header p {
+    font-size: 12px;
+    color: var(--eco-muted);
+}
+
+.btn-nuevo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--eco-green);
+    border: none;
+    border-radius: 10px;
+    padding: 9px 14px;
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--eco-pale);
+    cursor: pointer;
+    transition: background var(--transition);
+    flex-shrink: 0;
+}
+
+.btn-nuevo:hover {
+    background: var(--eco-lime);
+    color: #0a1a12;
+}
+
+/* ── Lista tickets ── */
+.tickets-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ticket-card {
+    background: var(--eco-card);
+    border: 1px solid var(--eco-border);
+    border-radius: 14px;
+    padding: 14px 16px;
+    transition: transform var(--transition);
+    animation: fadeUp 0.3s ease both;
+}
+
+.ticket-card:hover {
+    transform: translateX(3px);
+}
+
+.ticket-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.ticket-id {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--eco-muted);
+}
+
+.ticket-badges {
+    display: flex;
+    gap: 5px;
+}
+
+.badge {
+    font-size: 9px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 20px;
+}
+
+.badge-green {
+    background: rgba(82, 183, 136, 0.1);
+    color: var(--eco-lime);
+}
+
+.badge-amber {
+    background: rgba(239, 159, 39, 0.1);
+    color: var(--eco-amber);
+}
+
+.badge-error {
+    background: rgba(244, 132, 95, 0.1);
+    color: var(--eco-error);
+}
+
+.badge-muted {
+    background: rgba(122, 170, 143, 0.1);
+    color: var(--eco-muted);
+}
+
+.badge-blue {
+    background: rgba(55, 138, 221, 0.1);
+    color: var(--eco-blue);
+}
+
+.ticket-tipo {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--eco-text);
+    margin-bottom: 5px;
+}
+
+.ticket-desc {
+    font-size: 12px;
+    color: var(--eco-muted);
+    line-height: 1.5;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.ticket-fecha {
+    font-size: 10px;
+    color: rgba(122, 170, 143, 0.5);
+}
+
+/* ── Vacío ── */
+.vacio {
+    text-align: center;
+    padding: 3rem 1.5rem;
+    background: var(--eco-card);
+    border: 1px solid var(--eco-border);
+    border-radius: 16px;
+}
+
+.vacio-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+}
+
+.vacio h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--eco-text);
+    margin-bottom: 6px;
+}
+
+.vacio p {
+    font-size: 12px;
+    color: var(--eco-muted);
+    margin-bottom: 1.2rem;
+}
+
+.btn-clasificar {
+    background: var(--eco-green);
+    border: none;
+    border-radius: 10px;
+    padding: 10px 24px;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--eco-pale);
+    cursor: pointer;
+    transition: background var(--transition);
+}
+
+.btn-clasificar:hover {
+    background: var(--eco-lime);
+    color: #0a1a12;
+}
+
+/* ── Modal ── */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.modal-overlay.open {
+    display: flex;
+}
+
+.modal {
+    background: var(--eco-card);
+    border: 1px solid var(--eco-border);
+    border-radius: 20px;
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 420px;
+    animation: fadeUp 0.3s ease both;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.2rem;
+}
+
+.modal-header h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--eco-text);
+}
+
+.modal-close {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--eco-surface);
+    border: none;
+    color: var(--eco-muted);
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--transition);
+}
+
+.modal-close:hover {
+    background: rgba(244, 132, 95, 0.15);
+    color: var(--eco-error);
+}
+
+/* ── Campos del modal ── */
+.field {
+    margin-bottom: 1rem;
+}
+
+.field label {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--eco-bright);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-bottom: 6px;
+}
+
+.field select,
+.field textarea {
+    width: 100%;
+    background: var(--eco-surface);
+    border: 1px solid var(--eco-border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--eco-text);
+    outline: none;
+    resize: none;
+    transition: border-color var(--transition);
+}
+
+.field select:focus,
+.field textarea:focus {
+    border-color: var(--eco-lime);
+}
+
+.field textarea::placeholder {
+    color: rgba(122, 170, 143, 0.4);
+}
+
+/* ── Prioridad ── */
+.prioridad-opts {
+    display: flex;
+    gap: 8px;
+}
+
+.prior-opt {
+    cursor: pointer;
+}
+
+.prior-opt input {
+    display: none;
+}
+
+.prior-btn {
+    display: block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all var(--transition);
+}
+
+.prior-btn.green {
+    background: rgba(82, 183, 136, 0.1);
+    color: var(--eco-lime);
+    border-color: rgba(82, 183, 136, 0.2);
+}
+
+.prior-btn.amber {
+    background: rgba(239, 159, 39, 0.1);
+    color: var(--eco-amber);
+    border-color: rgba(239, 159, 39, 0.2);
+}
+
+.prior-btn.red {
+    background: rgba(244, 132, 95, 0.1);
+    color: var(--eco-error);
+    border-color: rgba(244, 132, 95, 0.2);
+}
+
+.prior-opt input:checked+.prior-btn.green {
+    background: rgba(82, 183, 136, 0.25);
+    border-color: var(--eco-lime);
+}
+
+.prior-opt input:checked+.prior-btn.amber {
+    background: rgba(239, 159, 39, 0.25);
+    border-color: var(--eco-amber);
+}
+
+.prior-opt input:checked+.prior-btn.red {
+    background: rgba(244, 132, 95, 0.25);
+    border-color: var(--eco-error);
+}
+
+.btn-main {
+    width: 100%;
+    padding: 12px;
+    background: var(--eco-green);
+    border: none;
+    border-radius: 10px;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--eco-pale);
+    cursor: pointer;
+    margin-top: 0.5rem;
+    transition: background var(--transition), transform 0.1s;
+}
+
+.btn-main:hover {
+    background: var(--eco-lime);
+    color: #0a1a12;
+}
+
+.btn-main:active {
+    transform: scale(0.98);
+}
+
+/* ── FAB (botón flotante) ── */
+.fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--eco-error);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 99;
+    box-shadow: 0 4px 16px rgba(244, 132, 95, 0.35);
+    transition: transform var(--transition), background var(--transition);
+}
+
+.fab:hover {
+    transform: scale(1.08);
+    background: #e06030;
+}
+
+.fab:active {
+    transform: scale(0.95);
+}
+
+/* ── Responsive PC ── */
+@media (min-width: 900px) {
+    .navbar {
+        padding: 13px 40px;
+    }
+
+    .nav-links {
+        display: flex !important;
+    }
+
+    .main {
+        max-width: 900px;
+        padding: 2.5rem 3rem;
+    }
+
+    .tickets-lista {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .page-header h1 {
+        font-size: 26px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .main {
+        max-width: 1100px;
+        padding: 3rem 4rem;
+    }
+
+    .tickets-lista {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}

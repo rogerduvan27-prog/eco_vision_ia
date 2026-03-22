@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>EcoVision AI — Mis Estadísticas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/estadisticas.css') }}">
+</head>
+
+<body>
+
+    <!-- ── NAVBAR ── -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="logo-ring">
+                <svg width="18" height="18" viewBox="0 0 30 30" fill="none">
+                    <circle cx="15" cy="15" r="12" stroke="#52b788" stroke-width="1.5" />
+                    <path d="M15 7 C11 10 9 13 11 17 C13 20 17 20 19 17 C21 13 19 10 15 7Z" fill="#52b788"
+                        opacity="0.85" />
+                </svg>
+            </div>
+            <span class="brand-name">EcoVision <span>AI</span></span>
+        </div>
+        <div class="nav-links" style="display:none">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/clasificador">Clasificar</a>
+            <a href="/precios">Precios</a>
+            <a href="/mapa">Mapa</a>
+            <a href="/historial">Historial</a>
+        </div>
+        <a href="/dashboard" class="nav-back">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                <path d="M12 5l-5 5 5 5" stroke="#52b788" stroke-width="1.3" stroke-linecap="round" />
+            </svg>
+            <span>Volver</span>
+        </a>
+    </nav>
+
+    <main class="main">
+
+        <!-- Encabezado -->
+        <div class="page-header">
+            <h1>Mis estadísticas</h1>
+            <p>Análisis de tu actividad de reciclaje</p>
+        </div>
+
+        <!-- Stats resumen -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-num">{{ stats.clasificados }}</div>
+                <div class="stat-lbl">Total clasificados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num green">{{ stats.reciclables }}</div>
+                <div class="stat-lbl">Reciclables</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num amber">{{ stats.kg }}<span class="stat-unit">kg</span></div>
+                <div class="stat-lbl">Acumulados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num">{{ stats.materiales }}</div>
+                <div class="stat-lbl">Tipos distintos</div>
+            </div>
+        </div>
+
+        <!-- Gráficas -->
+        <div class="graficas-grid">
+
+            <!-- Barras: actividad semanal -->
+            <div class="grafica-card">
+                <div class="grafica-header">
+                    <div>
+                        <div class="grafica-titulo">Actividad semanal</div>
+                        <div class="grafica-sub">Clasificaciones por día — últimos 7 días</div>
+                    </div>
+                    <div class="grafica-badge">Esta semana</div>
+                </div>
+                <div class="grafica-wrap">
+                    <canvas id="chart-semanal"></canvas>
+                </div>
+            </div>
+
+            <!-- Dona: distribución materiales -->
+            <div class="grafica-card">
+                <div class="grafica-header">
+                    <div>
+                        <div class="grafica-titulo">Materiales clasificados</div>
+                        <div class="grafica-sub">Distribución por tipo de residuo</div>
+                    </div>
+                    <div class="grafica-badge">Total</div>
+                </div>
+                <div class="grafica-wrap">
+                    <canvas id="chart-materiales"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Mensaje si no hay datos -->
+        {% if stats.clasificados == 0 %}
+        <div class="sin-datos">
+            <div class="sin-icon">📊</div>
+            <h2>Aún no tienes datos</h2>
+            <p>Clasifica tu primer residuo para ver tus estadísticas aquí</p>
+            <a href="/clasificador" class="btn-clasificar">Ir al clasificador</a>
+        </div>
+        {% endif %}
+
+        <p class="footer-note">Datos actualizados en tiempo real desde tu historial</p>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        const GRAF_SEMANAL = {{ graficas.semanal | tojson }};
+        const GRAF_MATERIALES = {{ graficas.materiales | tojson }};
+    </script>
+    <script src="{{ url_for('static', filename='js/estadisticas.js') }}"></script>
+</body>
+
+</html>

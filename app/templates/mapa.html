@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>EcoVision AI — Puntos de Acopio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/mapa.css') }}">
+</head>
+
+<body>
+
+    <!-- ── NAVBAR ── -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="logo-ring">
+                <svg width="18" height="18" viewBox="0 0 30 30" fill="none">
+                    <circle cx="15" cy="15" r="12" stroke="#52b788" stroke-width="1.5" />
+                    <path d="M15 7 C11 10 9 13 11 17 C13 20 17 20 19 17 C21 13 19 10 15 7Z" fill="#52b788"
+                        opacity="0.85" />
+                </svg>
+            </div>
+            <span class="brand-name">EcoVision <span>AI</span></span>
+        </div>
+        <div class="nav-links" style="display:none">
+            <a href="/dashboard">menu</a>
+            <a href="/clasificador">Clasificar</a>
+            <a href="/precios">Precios</a>
+            <a href="/mapa" class="active">Mapa</a>
+            <a href="/historial">Historial</a>
+        </div>
+        <a href="/dashboard" class="nav-back">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                <path d="M12 5l-5 5 5 5" stroke="#52b788" stroke-width="1.3" stroke-linecap="round" />
+            </svg>
+            <span>Volver</span>
+        </a>
+    </nav>
+
+    <!-- ── CONTENIDO ── -->
+    <main class="main">
+
+        <!-- Encabezado -->
+        <div class="page-header">
+            <h1>Puntos de acopio</h1>
+            <p>Centros de reciclaje cercanos en Bogotá, Colombia</p>
+        </div>
+
+        <!-- Buscador -->
+        <div class="search-box">
+            <svg width="15" height="15" viewBox="0 0 20 20" fill="none">
+                <circle cx="9" cy="9" r="6" stroke="#7aaa8f" stroke-width="1.3" />
+                <path d="M15 15l-3-3" stroke="#7aaa8f" stroke-width="1.3" stroke-linecap="round" />
+            </svg>
+            <input type="text" id="buscador" placeholder="Buscar punto de acopio..." oninput="buscar(this.value)">
+        </div>
+
+        <!-- Filtros -->
+        <div class="filtros">
+            <button class="filtro activo" data-tipo="todos" onclick="filtrar(this)">Todos</button>
+            <button class="filtro" data-tipo="reciclaje" onclick="filtrar(this)">Reciclaje</button>
+            <button class="filtro" data-tipo="centro" onclick="filtrar(this)">Centros</button>
+            <button class="filtro" data-tipo="empresa" onclick="filtrar(this)">Empresas</button>
+        </div>
+
+        <!-- Mapa -->
+        <div class="mapa-wrap">
+            <div id="mapa"></div>
+            <button class="btn-ubicacion" onclick="centrarUbicacion()" title="Mi ubicación">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="3" stroke="#52b788" stroke-width="1.5" />
+                    <path d="M12 2v3M12 19v3M2 12h3M19 12h3" stroke="#52b788" stroke-width="1.5"
+                        stroke-linecap="round" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Lista puntos -->
+        <div class="section-title">
+            <span>Más cercanos</span>
+            <span class="count" id="count">{{ puntos|length }} puntos</span>
+        </div>
+
+        <div class="puntos-lista" id="puntos-lista">
+            {% for p in puntos %}
+            <div class="punto-card" data-tipo="{{ p.tipo }}" data-nombre="{{ p.nombre|lower }}"
+                onclick="irAPunto({{ p.lat }}, {{ p.lng }}, '{{ p.nombre }}')">
+                <div class="punto-icon tipo-{{ p.tipo }}">{{ p.emoji }}</div>
+                <div class="punto-info">
+                    <div class="punto-nombre">{{ p.nombre }}</div>
+                    <div class="punto-dir">{{ p.direccion }}</div>
+                    <div class="punto-meta">
+                        <span class="punto-dist" id="dist-{{ loop.index }}">Calculando...</span>
+                        <span class="punto-mat">{{ p.materiales }}</span>
+                    </div>
+                </div>
+                <div class="punto-estado estado-{{ 'abierto' if p.abierto else 'cerrado' }}">
+                    {{ 'Abierto' if p.abierto else 'Cerrado' }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <p class="footer-note">Datos de referencia · Bogotá, Colombia</p>
+
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        const PUNTOS = {{ puntos | tojson }};
+    </script>
+    <script src="{{ url_for('static', filename='js/mapa.js') }}"></script>
+</body>
+
+</html>

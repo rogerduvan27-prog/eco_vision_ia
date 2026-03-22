@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>EcoVision AI — Mi Historial</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/historial.css') }}">
+</head>
+
+<body>
+
+    <!-- ── NAVBAR ── -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="logo-ring">
+                <svg width="18" height="18" viewBox="0 0 30 30" fill="none">
+                    <circle cx="15" cy="15" r="12" stroke="#52b788" stroke-width="1.5" />
+                    <path d="M15 7 C11 10 9 13 11 17 C13 20 17 20 19 17 C21 13 19 10 15 7Z" fill="#52b788"
+                        opacity="0.85" />
+                </svg>
+            </div>
+            <span class="brand-name">EcoVision <span>AI</span></span>
+        </div>
+        <div class="nav-links" style="display:none">
+            <a href="/dashboard">menu</a>
+            <a href="/clasificador">Clasificar</a>
+            <a href="/precios">Precios</a>
+            <a href="/mapa">Mapa</a>
+            <a href="/historial" class="active">Historial</a>
+        </div>
+        <a href="/dashboard" class="nav-back">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                <path d="M12 5l-5 5 5 5" stroke="#52b788" stroke-width="1.3" stroke-linecap="round" />
+            </svg>
+            <span>Volver</span>
+        </a>
+    </nav>
+
+    <main class="main">
+
+        <!-- ── SIDEBAR PC ── -->
+        <aside class="sidebar">
+
+            <div class="page-header">
+                <h1>Mi historial</h1>
+                <span class="total-badge">{{ registros|length }} registros</span>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-num">{{ stats.total }}</div>
+                    <div class="stat-lbl">Total</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num green">{{ stats.reciclables }}</div>
+                    <div class="stat-lbl">Reciclables</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num amber">{{ stats.kg }}<span class="stat-unit">kg</span></div>
+                    <div class="stat-lbl">Acumulados</div>
+                </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="filtros">
+                <button class="filtro activo" data-tipo="todos" onclick="filtrar(this)">Todos</button>
+                <button class="filtro" data-tipo="Plástico" onclick="filtrar(this)">Plástico</button>
+                <button class="filtro" data-tipo="Metal" onclick="filtrar(this)">Metal</button>
+                <button class="filtro" data-tipo="Papel" onclick="filtrar(this)">Papel</button>
+                <button class="filtro" data-tipo="Vidrio" onclick="filtrar(this)">Vidrio</button>
+                <button class="filtro" data-tipo="Orgánico" onclick="filtrar(this)">Orgánico</button>
+            </div>
+
+            <!-- Botón clasificar nuevo -->
+            <a href="/clasificador" class="btn-clasificar">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.4" />
+                    <path d="M8 12l3 3 5-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                Clasificar nuevo residuo
+            </a>
+
+        </aside>
+
+        <!-- ── LISTA ── -->
+        <section class="col-lista">
+
+            {% if registros %}
+            <div class="registros-lista" id="registros-lista">
+                {% for r in registros %}
+                <div class="registro-card" data-tipo="{{ r.tipo_material }}">
+
+                    <div
+                        class="reg-icon tipo-{{ r.tipo_material|lower|replace('á','a')|replace('é','e')|replace('í','i')|replace('ó','o')|replace('ú','u') }}">
+                        {{ r.emoji }}
+                    </div>
+
+                    <div class="reg-info">
+                        <div class="reg-nombre">{{ r.nombre_objeto }}</div>
+                        <div class="reg-meta">
+                            <span class="reg-tipo">{{ r.tipo_material }}</span>
+                            <span class="reg-fecha">{{ r.fecha_fmt }}</span>
+                        </div>
+                    </div>
+
+                    <div class="reg-right">
+                        <div class="reg-estado {{ 'estado-ok' if r.reciclable else 'estado-no' }}">
+                            {{ '✓ Reciclable' if r.reciclable else '✗ No reciclable' }}
+                        </div>
+                        <div class="reg-confianza">{{ r.confianza }}% confianza</div>
+                    </div>
+
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="sin-resultados" id="sin-resultados" style="display:none">
+                <div class="sin-icon">🔍</div>
+                <p>No hay registros de este tipo</p>
+            </div>
+
+            {% else %}
+            <div class="vacio">
+                <div class="vacio-icon">📋</div>
+                <h2>Sin clasificaciones aún</h2>
+                <p>Clasifica tu primer residuo para verlo aquí</p>
+                <a href="/clasificador" class="btn-clasificar-vacio">Ir al clasificador</a>
+            </div>
+            {% endif %}
+
+        </section>
+
+    </main>
+
+    <script src="{{ url_for('static', filename='js/historial.js') }}"></script>
+</body>
+
+</html>

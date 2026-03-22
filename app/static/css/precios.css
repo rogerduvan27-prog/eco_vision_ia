@@ -1,0 +1,452 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap');
+
+:root {
+    --eco-bg: #0a1a12;
+    --eco-card: #112318;
+    --eco-surface: #162e1e;
+    --eco-border: rgba(82, 183, 136, 0.18);
+    --eco-green: #2d6a4f;
+    --eco-lime: #52b788;
+    --eco-bright: #95d5b2;
+    --eco-pale: #d8f3dc;
+    --eco-text: #eaf6ee;
+    --eco-muted: #7aaa8f;
+    --eco-error: #f4845f;
+    --eco-amber: #EF9F27;
+    --eco-blue: #378ADD;
+    --transition: 0.22s ease;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--eco-bg);
+    color: var(--eco-text);
+    min-height: 100vh;
+    padding-bottom: 2rem;
+}
+
+/* ── Navbar ── */
+.navbar {
+    background: var(--eco-card);
+    border-bottom: 1px solid var(--eco-border);
+    padding: 13px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo-ring {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1.5px solid var(--eco-lime);
+    background: rgba(45, 106, 79, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.brand-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--eco-text);
+}
+
+.brand-name span {
+    color: var(--eco-lime);
+}
+
+.nav-links {
+    display: none;
+    align-items: center;
+    gap: 22px;
+}
+
+.nav-links a {
+    font-size: 13px;
+    color: var(--eco-muted);
+    font-weight: 500;
+    padding: 4px 0;
+    border-bottom: 2px solid transparent;
+    transition: color var(--transition);
+}
+
+.nav-links a:hover {
+    color: var(--eco-bright);
+}
+
+.nav-links a.active {
+    color: var(--eco-lime);
+    border-bottom-color: var(--eco-lime);
+}
+
+.nav-back {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--eco-lime);
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background: rgba(82, 183, 136, 0.08);
+    border: 1px solid var(--eco-border);
+    transition: background var(--transition);
+}
+
+.nav-back:hover {
+    background: rgba(82, 183, 136, 0.15);
+}
+
+/* ── Main ── */
+.main {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 1.5rem 1.2rem;
+    animation: fadeUp 0.4s ease both;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── Encabezado ── */
+.page-header {
+    margin-bottom: 1.3rem;
+}
+
+.page-header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--eco-text);
+    letter-spacing: -0.3px;
+    margin-bottom: 3px;
+}
+
+.page-header p {
+    font-size: 13px;
+    color: var(--eco-muted);
+    font-weight: 300;
+}
+
+/* ── Stats ── */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 1.2rem;
+}
+
+.stat-card {
+    background: var(--eco-surface);
+    border: 1px solid var(--eco-border);
+    border-radius: 10px;
+    padding: 12px 8px;
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 9px;
+    color: var(--eco-muted);
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 3px;
+}
+
+.stat-value.green {
+    color: var(--eco-lime);
+}
+
+.stat-value.amber {
+    color: var(--eco-amber);
+}
+
+.stat-sub {
+    font-size: 9px;
+    color: var(--eco-muted);
+}
+
+/* ── Filtros ── */
+.filtros {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 1.1rem;
+}
+
+.filtro {
+    background: var(--eco-surface);
+    border: 1px solid var(--eco-border);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--eco-muted);
+    cursor: pointer;
+    transition: all var(--transition);
+}
+
+.filtro:hover {
+    border-color: var(--eco-lime);
+    color: var(--eco-bright);
+}
+
+.filtro.activo {
+    background: var(--eco-lime);
+    color: #0a1a12;
+    border-color: var(--eco-lime);
+}
+
+/* ── Grid de materiales ── */
+.materiales-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.material-card {
+    background: var(--eco-card);
+    border: 1px solid var(--eco-border);
+    border-radius: 14px;
+    padding: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: transform var(--transition), border-color var(--transition);
+    animation: fadeUp 0.3s ease both;
+}
+
+.material-card:hover {
+    transform: translateX(3px);
+    border-color: rgba(82, 183, 136, 0.35);
+}
+
+.material-card.oculto {
+    display: none;
+}
+
+.mat-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--eco-surface);
+    border: 1px solid var(--eco-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.mat-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.mat-nombre {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--eco-text);
+    margin-bottom: 4px;
+}
+
+.mat-cat {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.cat-badge {
+    font-size: 9px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 20px;
+}
+
+.cat-metal {
+    background: rgba(55, 138, 221, 0.1);
+    color: var(--eco-blue);
+}
+
+.cat-plastico {
+    background: rgba(82, 183, 136, 0.1);
+    color: var(--eco-lime);
+}
+
+.cat-papel {
+    background: rgba(239, 159, 39, 0.1);
+    color: var(--eco-amber);
+}
+
+.cat-vidrio {
+    background: rgba(149, 213, 178, 0.1);
+    color: var(--eco-bright);
+}
+
+.mat-demanda {
+    font-size: 9px;
+    color: var(--eco-muted);
+}
+
+.demanda-alta {
+    color: var(--eco-lime);
+}
+
+.demanda-media {
+    color: var(--eco-amber);
+}
+
+.demanda-baja {
+    color: var(--eco-muted);
+}
+
+.mat-precio {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.precio-valor {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.precio-valor.amber {
+    color: var(--eco-amber);
+}
+
+.precio-valor.blue {
+    color: var(--eco-blue);
+}
+
+.precio-valor.green {
+    color: var(--eco-lime);
+}
+
+.precio-label {
+    font-size: 9px;
+    color: var(--eco-muted);
+    margin-top: 2px;
+}
+
+/* ── Footer ── */
+.footer-note {
+    text-align: center;
+    font-size: 11px;
+    color: rgba(122, 170, 143, 0.4);
+    margin-top: 1.2rem;
+}
+
+/* ── Responsive PC ── */
+@media (min-width: 600px) {
+    .materiales-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .material-card:hover {
+        transform: translateY(-2px);
+    }
+}
+
+@media (min-width: 900px) {
+    .navbar {
+        padding: 13px 40px;
+    }
+
+    .nav-links {
+        display: flex !important;
+    }
+
+    .main {
+        max-width: 1100px;
+        padding: 2.5rem 3rem;
+    }
+
+    .page-header h1 {
+        font-size: 28px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(3, 220px);
+        gap: 12px;
+    }
+
+    .stat-card {
+        padding: 16px 14px;
+    }
+
+    .stat-value {
+        font-size: 20px;
+    }
+
+    .stat-label {
+        font-size: 11px;
+    }
+
+    .materiales-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+    }
+
+    .material-card {
+        padding: 16px;
+    }
+
+    .mat-nombre {
+        font-size: 14px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .main {
+        max-width: 1280px;
+        padding: 3rem 4rem;
+    }
+
+    .materiales-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}

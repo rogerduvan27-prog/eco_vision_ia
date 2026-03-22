@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>EcoVision AI — Precios de Materiales</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/precios.css') }}">
+</head>
+
+<body>
+
+    <!-- ── NAVBAR ── -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="logo-ring">
+                <svg width="18" height="18" viewBox="0 0 30 30" fill="none">
+                    <circle cx="15" cy="15" r="12" stroke="#52b788" stroke-width="1.5" />
+                    <path d="M15 7 C11 10 9 13 11 17 C13 20 17 20 19 17 C21 13 19 10 15 7Z" fill="#52b788"
+                        opacity="0.85" />
+                </svg>
+            </div>
+            <span class="brand-name">EcoVision <span>AI</span></span>
+        </div>
+        <div class="nav-links" style="display:none">
+            <a href="/dashboard">menu</a>
+            <a href="/clasificador">Clasificar</a>
+            <a href="/precios" class="active">Precios</a>
+            <a href="/mapa">Mapa</a>
+            <a href="/historial">Historial</a>
+        </div>
+        <a href="/dashboard" class="nav-back">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                <path d="M12 5l-5 5 5 5" stroke="#52b788" stroke-width="1.3" stroke-linecap="round" />
+            </svg>
+            <span>Volver</span>
+        </a>
+    </nav>
+
+    <!-- ── CONTENIDO ── -->
+    <main class="main">
+
+        <!-- Encabezado -->
+        <div class="page-header">
+            <h1>Precios de materiales</h1>
+            <p>Valores actuales de reciclables en Bogotá, Colombia</p>
+        </div>
+
+        <!-- Stats resumen -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Material más valioso</div>
+                <div class="stat-value amber">{{ top_nombre }}</div>
+                <div class="stat-sub">${{ top_precio }}/kg</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Materiales</div>
+                <div class="stat-value green">{{ total }}</div>
+                <div class="stat-sub">disponibles</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Actualizado</div>
+                <div class="stat-value green">Hoy</div>
+                <div class="stat-sub">{{ fecha_hoy }}</div>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filtros">
+            <button class="filtro activo" data-cat="todos" onclick="filtrar(this)">Todos</button>
+            <button class="filtro" data-cat="Metal" onclick="filtrar(this)">Metales</button>
+            <button class="filtro" data-cat="Plástico" onclick="filtrar(this)">Plásticos</button>
+            <button class="filtro" data-cat="Papel" onclick="filtrar(this)">Papel</button>
+            <button class="filtro" data-cat="Vidrio" onclick="filtrar(this)">Vidrio</button>
+        </div>
+
+        <!-- Lista de materiales -->
+        <div class="materiales-grid" id="materiales-grid">
+            {% for m in materiales %}
+            <div class="material-card" data-cat="{{ m.categoria }}">
+                <div class="mat-icon">{{ m.emoji }}</div>
+                <div class="mat-info">
+                    <div class="mat-nombre">{{ m.nombre }}</div>
+                    <div class="mat-cat">
+                        <span
+                            class="cat-badge cat-{{ m.categoria|lower|replace('á','a')|replace('é','e')|replace('í','i')|replace('ó','o')|replace('ú','u') }}">
+                            {{ m.categoria }}
+                        </span>
+                        <span class="mat-demanda demanda-{{ m.demanda|lower }}">{{ m.demanda }} demanda</span>
+                    </div>
+                </div>
+                <div class="mat-precio">
+                    <div class="precio-valor {{ m.color }}">${{ m.precio_kg }}</div>
+                    <div class="precio-label">por kg</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <p class="footer-note">Precios en COP · Referencia mercado local Bogotá</p>
+
+    </main>
+
+    <script src="{{ url_for('static', filename='js/precios.js') }}"></script>
+</body>
+
+</html>

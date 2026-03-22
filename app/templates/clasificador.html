@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>EcoVision AI — Clasificador</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/clasificador.css') }}">
+</head>
+
+<body>
+
+    <!-- ── NAVBAR ── -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="logo-ring">
+                <svg width="18" height="18" viewBox="0 0 30 30" fill="none">
+                    <circle cx="15" cy="15" r="12" stroke="#52b788" stroke-width="1.5" />
+                    <path d="M15 7 C11 10 9 13 11 17 C13 20 17 20 19 17 C21 13 19 10 15 7Z" fill="#52b788"
+                        opacity="0.85" />
+                </svg>
+            </div>
+            <span class="brand-name">EcoVision <span>AI</span></span>
+        </div>
+        <div class="nav-links" style="display:none">
+            <a href="/dashboard">menu</a>
+            <a href="/clasificador" class="active">Clasificar</a>
+            <a href="/precios">Precios</a>
+            <a href="/mapa">Mapa</a>
+            <a href="/historial">Historial</a>
+        </div>
+        <a href="/dashboard" class="nav-back">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                <path d="M12 5l-5 5 5 5" stroke="#52b788" stroke-width="1.3" stroke-linecap="round" />
+            </svg>
+            <span>Volver</span>
+        </a>
+    </nav>
+
+    <main class="main">
+
+        <!-- ── COLUMNA IZQUIERDA: Captura ── -->
+        <section class="col-captura">
+
+            <div class="section-header">
+                <h1>Clasificar residuo</h1>
+                <div class="ia-badge">
+                    <div class="ia-dot"></div>
+                    IA activa
+                </div>
+            </div>
+
+            <!-- Tabs cámara / galería -->
+            <div class="tabs">
+                <button class="tab activo" id="tab-camara" onclick="switchTab('camara')" type="button">
+                    📷 Cámara
+                </button>
+                <button class="tab" id="tab-galeria" onclick="switchTab('galeria')" type="button">
+                    🖼️ Galería
+                </button>
+                <div class="tab-slider" id="tab-slider"></div>
+            </div>
+
+            <!-- Panel cámara -->
+            <div id="panel-camara">
+                <div class="camara-box" id="camara-box">
+                    <video id="video" autoplay playsinline></video>
+                    <canvas id="canvas-capture" style="display:none"></canvas>
+                    <!-- Esquinas -->
+                    <div class="corner tl"></div>
+                    <div class="corner tr"></div>
+                    <div class="corner bl"></div>
+                    <div class="corner br"></div>
+                    <!-- Línea escáner -->
+                    <div class="scan-line" id="scan-line"></div>
+                    <p class="camara-hint" id="camara-hint">Iniciando cámara...</p>
+                </div>
+                <div class="capture-row">
+                    <p class="capture-label">Apunta al residuo y captura</p>
+                    <button class="btn-capture" id="btn-capture" onclick="capturarFoto()" disabled>
+                        <div class="btn-capture-inner"></div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Panel galería -->
+            <div id="panel-galeria" style="display:none">
+                <div class="drop-zone" id="drop-zone" onclick="document.getElementById('input-file').click()"
+                    ondragover="event.preventDefault();this.classList.add('drag-over')"
+                    ondragleave="this.classList.remove('drag-over')" ondrop="soltar(event)">
+                    <div class="drop-icon">🖼️</div>
+                    <p class="drop-title">Arrastra una imagen aquí</p>
+                    <p class="drop-sub">o haz clic para seleccionar</p>
+                    <input type="file" id="input-file" accept="image/*" style="display:none"
+                        onchange="cargarImagen(event)">
+                </div>
+                <img id="preview-img" class="preview-img" style="display:none" alt="Preview">
+                <button class="btn-analizar" id="btn-analizar" style="display:none" onclick="clasificarImagen()">
+                    Analizar imagen
+                </button>
+            </div>
+
+        </section>
+
+        <!-- ── COLUMNA DERECHA: Resultado ── -->
+        <section class="col-resultado">
+
+            <!-- Estado inicial -->
+            <div class="resultado-placeholder" id="resultado-placeholder">
+                <div class="placeholder-icon">🔍</div>
+                <p class="placeholder-title">Esperando imagen</p>
+                <p class="placeholder-sub">Captura o sube una foto para clasificar</p>
+            </div>
+
+            <!-- Loader -->
+            <div class="resultado-loader" id="resultado-loader" style="display:none">
+                <div class="loader-ring"></div>
+                <p class="loader-text">Analizando con IA...</p>
+            </div>
+
+            <!-- Resultado -->
+            <div class="resultado-card" id="resultado-card" style="display:none">
+
+                <div class="res-header">
+                    <div class="res-emoji" id="res-emoji">♻️</div>
+                    <div>
+                        <div class="res-nombre" id="res-nombre">—</div>
+                        <div class="res-tipo" id="res-tipo">—</div>
+                    </div>
+                </div>
+
+                <!-- Barra confianza -->
+                <div class="confianza-wrap">
+                    <div class="confianza-row">
+                        <span>Confianza de la IA</span>
+                        <span class="confianza-val" id="confianza-val">0%</span>
+                    </div>
+                    <div class="confianza-bar">
+                        <div class="confianza-fill" id="confianza-fill"></div>
+                    </div>
+                </div>
+
+                <!-- Info grid -->
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Contenedor</div>
+                        <div class="info-val" id="info-contenedor">—</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Valor aprox.</div>
+                        <div class="info-val amber" id="info-precio">—</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Categoría</div>
+                        <div class="info-val" id="info-categoria">—</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Estado</div>
+                        <div class="info-val" id="info-estado">—</div>
+                    </div>
+                </div>
+
+                <!-- Consejo -->
+                <div class="consejo-box">
+                    <span class="consejo-label">Consejo</span>
+                    <span id="consejo-text">—</span>
+                </div>
+
+                <!-- Botones -->
+                <button class="btn-guardar" id="btn-guardar" onclick="guardarHistorial()">
+                    Guardar en historial
+                </button>
+                <button class="btn-nuevo" onclick="nuevoResiduo()">
+                    Clasificar otro residuo
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- TensorFlow.js + MobileNet -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0/dist/mobilenet.min.js"></script>
+    <script src="{{ url_for('static', filename='js/clasificador.js') }}"></script>
+</body>
+
+</html>

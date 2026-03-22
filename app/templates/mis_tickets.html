@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>EcoVision AI — Mis Tickets</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/tickets.css') }}">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="nav-brand">
+            <div class="logo-ring">
+                <svg width="18" height="18" viewBox="0 0 30 30" fill="none">
+                    <circle cx="15" cy="15" r="12" stroke="#52b788" stroke-width="1.5" />
+                    <path d="M15 7 C11 10 9 13 11 17 C13 20 17 20 19 17 C21 13 19 10 15 7Z" fill="#52b788"
+                        opacity="0.85" />
+                </svg>
+            </div>
+            <span class="brand-name">EcoVision <span>AI</span></span>
+        </div>
+        <div class="nav-links" style="display:none">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/clasificador">Clasificar</a>
+            <a href="/precios">Precios</a>
+            <a href="/mapa">Mapa</a>
+            <a href="/historial">Historial</a>
+        </div>
+        <a href="/dashboard" class="nav-back">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+                <path d="M12 5l-5 5 5 5" stroke="#52b788" stroke-width="1.3" stroke-linecap="round" />
+            </svg>
+            <span>Volver</span>
+        </a>
+    </nav>
+
+    <main class="main">
+
+        <div class="page-header">
+            <div>
+                <h1>Mis tickets</h1>
+                <p>Seguimiento de tus reportes de soporte</p>
+            </div>
+            <button class="btn-nuevo" onclick="abrirModal()">
+                <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
+                    <path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                </svg>
+                Nuevo ticket
+            </button>
+        </div>
+
+        {% if tickets %}
+        <div class="tickets-lista">
+            {% for t in tickets %}
+            <div class="ticket-card">
+                <div class="ticket-header">
+                    <div class="ticket-id">#{{ '%03d' % t.id }}</div>
+                    <div class="ticket-badges">
+                        <span class="badge badge-{{ t.prior_color }}">{{ t.prior_label }}</span>
+                        <span class="badge badge-{{ t.estado_color }}">{{ t.estado_label }}</span>
+                    </div>
+                </div>
+                <div class="ticket-tipo">{{ t.tipo }}</div>
+                <div class="ticket-desc">{{ t.descripcion }}</div>
+                <div class="ticket-fecha">{{ t.fecha_fmt }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="vacio">
+            <div class="vacio-icon">🎫</div>
+            <h2>Sin tickets aún</h2>
+            <p>¿Tienes algún problema? Repórtalo y te ayudaremos.</p>
+            <button class="btn-clasificar" onclick="abrirModal()">Crear primer ticket</button>
+        </div>
+        {% endif %}
+
+    </main>
+
+    <!-- Modal crear ticket -->
+    <div class="modal-overlay" id="modal-overlay" onclick="cerrarModal(event)">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Reportar problema</h2>
+                <button class="modal-close" onclick="cerrarModal()" type="button">✕</button>
+            </div>
+            <form action="/tickets/crear" method="POST" novalidate>
+
+                <div class="field">
+                    <label>Tipo de problema</label>
+                    <select name="tipo" required>
+                        {% for tipo in tipos %}
+                        <option value="{{ tipo }}">{{ tipo }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Descripción</label>
+                    <textarea name="descripcion" rows="4" placeholder="Describe el problema con detalle..."
+                        required></textarea>
+                </div>
+
+                <div class="field">
+                    <label>Prioridad</label>
+                    <div class="prioridad-opts">
+                        <label class="prior-opt">
+                            <input type="radio" name="prioridad" value="baja" checked>
+                            <span class="prior-btn green">Baja</span>
+                        </label>
+                        <label class="prior-opt">
+                            <input type="radio" name="prioridad" value="media">
+                            <span class="prior-btn amber">Media</span>
+                        </label>
+                        <label class="prior-opt">
+                            <input type="radio" name="prioridad" value="alta">
+                            <span class="prior-btn red">Alta</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-main">Enviar ticket</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Botón flotante -->
+    <button class="fab" onclick="abrirModal()" title="Reportar problema">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5" />
+            <path d="M12 8v4M12 16v.5" stroke="white" stroke-width="1.8" stroke-linecap="round" />
+        </svg>
+    </button>
+
+    <script src="{{ url_for('static', filename='js/tickets.js') }}"></script>
+</body>
+
+</html>
