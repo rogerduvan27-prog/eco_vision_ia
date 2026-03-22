@@ -1,4 +1,6 @@
 import os
+from dotenv import load_dotenv
+load_dotenv()
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_mail import Mail
 from app.conexion import conexion_DB
@@ -25,9 +27,9 @@ app.secret_key = 'ecovision_secret_key_2024'
 app.config['MAIL_SERVER']         = 'smtp.gmail.com'
 app.config['MAIL_PORT']           = 587
 app.config['MAIL_USE_TLS']        = True
-app.config['MAIL_USERNAME']       = 'duvangamer2703@gmail.com'
-app.config['MAIL_PASSWORD']       = 'ojqsfosjwoxtimox'
-app.config['MAIL_DEFAULT_SENDER'] = ('EcoVision AI', 'duvangamer2703@gmail.com')
+app.config['MAIL_USERNAME']       = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD']       = os.environ.get('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = ('EcoVision AI', os.environ.get('MAIL_USERNAME'))
 
 mail = Mail(app)
 
