@@ -1,10 +1,8 @@
 {
     "build": {
-        "builder": "NIXPACKS",
-        "buildCommand": "pip install -r requirements.txt"
+        "builder": "NIXPACKS"
     },
     "deploy": {
-        "startCommand": "gunicorn run:app",
-        "restartPolicyType": "ON_FAILURE"
+        "startCommand": "gunicorn run:app --bind 0.0.0.0:$PORT"
     }
 }
