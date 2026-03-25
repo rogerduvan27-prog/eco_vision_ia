@@ -58,10 +58,10 @@ def verificar_mantenimiento():
     rutas_libres = ['login', 'registro', 'olvide_password',
                     'recuperar_password', 'static', 'admin_panel',
                     'admin_tickets_estado', 'admin_eliminar_usuario',
-                    'admin_mantenimiento']
+                    'admin_mantenimiento', 'index']
     if request.endpoint in rutas_libres:
         return
-    if es_admin():
+    if sesion_activa() and es_admin():
         return
     if admin_ctrl.obtener_mantenimiento():
         return render_template('mantenimiento.html'), 503
