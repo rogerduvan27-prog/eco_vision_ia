@@ -1,22 +1,77 @@
 <!DOCTYPE html>
+<!--
+══════════════════════════════════════════════════════════════════
+PLANTILLA JINJA2 — dashboard.html
+
+Este archivo NO es HTML puro. Es una PLANTILLA que Flask procesa
+en el servidor antes de enviársela al navegador.
+
+Flask reemplaza todo lo que esté entre {{ }} con datos reales,
+y ejecuta la lógica entre {% %}. El navegador solo recibe
+el HTML final ya procesado — nunca ve las etiquetas Jinja2.
+
+Los datos llegan desde app.py en esta línea:
+    render_template('dashboard.html', nombre=..., stats=...)
+══════════════════════════════════════════════════════════════════
+-->
 <html lang="es">
 
 <head>
+    <!-- Codificación UTF-8: permite mostrar tildes, ñ, emojis, etc. -->
     <meta charset="UTF-8">
+
+    <!--
+    VIEWPORT — Hace que la página se adapte a pantallas de celular.
+    Sin esta línea, el móvil muestra la página como desktop
+    y todo aparece diminuto.
+    maximum-scale=1.0 desactiva el zoom con pellizco
+    (útil para apps que se comportan como nativas).
+    -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>EcoVision AI — Dashboard</title>
+
+    <title>EcoVision AI — MENU</title>
+
+    <!--
+    FUENTES DE GOOGLE — Se cargan dos familias tipográficas:
+        · Syne    → para títulos y elementos destacados
+        · DM Sans → para texto de lectura general
+    
+    rel="preconnect" le dice al navegador que inicie la conexión
+    con Google Fonts lo antes posible, reduciendo el tiempo de carga.
+    Se pone ANTES del link de las fuentes para que sea más rápido.
+    -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link
         href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700&family=DM+Sans:wght@300;400;500&display=swap"
         rel="stylesheet">
+
+    <!--
+    CSS ESTÁTICO — url_for() es una función de Jinja2/Flask que
+    genera automáticamente la URL correcta al archivo CSS.
+    
+    Ventaja: si cambias el puerto o el dominio del servidor,
+    url_for() actualiza la URL sola. No tienes que editar el HTML.
+    
+    'static' es el nombre de la carpeta de archivos estáticos
+    configurada en app.py (imágenes, CSS, JS).
+    -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
 </head>
 
 <body>
 
     <!-- ── NAVBAR ── -->
+    <!--
+    Barra de navegación superior. Contiene:
+        · Logo + nombre de la app (izquierda)
+        · Links de navegación (ocultos en móvil con display:none)
+        · Avatar y nombre del usuario (derecha)
+    -->
     <nav class="navbar">
         <div class="nav-brand">
+            <!-- Logo SVG dibujado directamente en HTML.
+                Ventaja sobre un archivo imagen: escala sin perder calidad,
+                no necesita una petición HTTP extra, y se puede animar con CSS. -->
             <div class="logo-ring">
                 <svg width="18" height="18" viewBox="0 0 30 30" fill="none">
                     <circle cx="15" cy="15" r="12" stroke="#52b788" stroke-width="1.5" />
@@ -28,6 +83,9 @@
             </div>
             <span class="brand-name">EcoVision <span>AI</span></span>
         </div>
+
+        <!-- Links ocultos en móvil (display:none).
+            En pantallas grandes el CSS los muestra con display:flex. -->
         <div class="nav-links" style="display:none">
             <a href="/dashboard" class="active">Menu</a>
             <a href="/clasificador">Clasificar</a>
@@ -35,7 +93,19 @@
             <a href="/mapa">Mapa</a>
             <a href="/historial">Historial</a>
         </div>
+
         <a href="/perfil" class="nav-user">
+            <!--
+            VARIABLE JINJA2 — {{ nombre }} se reemplaza con el
+            nombre real del usuario (viene de session en app.py).
+            
+            nombre[0]  → toma solo el PRIMER carácter del nombre
+            |upper     → FILTRO Jinja2: convierte a mayúscula
+            
+            Resultado: si nombre = "roger", muestra "R" en el avatar.
+            Los filtros transforman valores antes de mostrarlos.
+            Otros filtros útiles: |lower, |length, |round, |default
+            -->
             <div class="user-avatar">{{ nombre[0]|upper }}</div>
             <span class="user-name">{{ nombre }}</span>
         </a>
@@ -44,25 +114,38 @@
     <!-- ── CONTENIDO PRINCIPAL ── -->
     <main class="main">
 
-        <!-- Indicador activo -->
+        <!-- Badge que indica que el sistema está funcionando.
+            El punto verde animado suele hacerse con CSS (@keyframes). -->
         <div class="status-badge">
             <div class="status-dot"></div>
             Sistema activo
         </div>
 
-        <!-- Saludo -->
+        <!-- Saludo personalizado usando la variable {{ nombre }} de Jinja2 -->
         <div class="greeting">
             <h1>¡Hola, {{ nombre }}!</h1>
             <p>¿Qué quieres hacer hoy?</p>
         </div>
 
-        <!-- Estadísticas -->
+        <!--
+        ESTADÍSTICAS — stats es el diccionario retornado por
+        obtener_stats() en app.py y pasado al template así:
+            render_template('dashboard.html', stats=stats)
+        
+        Se accede a sus valores con punto: stats.clasificados
+        En Jinja2 tanto stats.clave como stats['clave'] funcionan igual.
+        
+        El diccionario tiene esta forma:
+            { 'clasificados': 12, 'kg': 3.5, 'materiales': 4 }
+        -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-number">{{ stats.clasificados }}</div>
                 <div class="stat-label">Clasificados</div>
             </div>
             <div class="stat-card">
+                <!-- stat-unit es un <span> para darle estilo distinto
+                    a la unidad "kg" sin afectar el número principal -->
                 <div class="stat-number">{{ stats.kg }}<span class="stat-unit">kg</span></div>
                 <div class="stat-label">Reciclados</div>
             </div>
@@ -72,7 +155,15 @@
             </div>
         </div>
 
-        <!-- Tip ecológico rotativo -->
+        <!--
+        TIP ECOLÓGICO — El contenido del tip se carga dinámicamente
+        con JavaScript (dashboard.js). Por eso el texto inicial es
+        "Cargando tip..." — JS lo reemplaza al ejecutarse.
+        
+        id="tip-text" e id="tip-dots" son los puntos de anclaje
+        que JavaScript usa para encontrar y modificar estos elementos
+        con document.getElementById('tip-text').
+        -->
         <div class="tip-box">
             <div class="tip-icon">
                 <svg width="14" height="14" viewBox="0 0 20 20" fill="none">
@@ -82,16 +173,34 @@
             </div>
             <div class="tip-content">
                 <span class="tip-label">¿Sabías que?</span>
+                <!-- JavaScript actualizará este texto al cargar la página -->
                 <span class="tip-text" id="tip-text">Cargando tip...</span>
             </div>
+            <!-- Los puntos indicadores del tip actual también los maneja JS -->
             <div class="tip-dots" id="tip-dots"></div>
         </div>
 
-        <!-- Módulos principales -->
+        <!-- ── MÓDULOS PRINCIPALES ── -->
+        <!--
+        TARJETAS DE MÓDULOS — Cada tarjeta es un <a href="...">
+        que envuelve todo el contenido visual.
+        
+        CONCEPTO CLAVE — Área de clic completa:
+        En lugar de poner solo un botón pequeño, toda la tarjeta
+        es clickeable. Al hacer clic en cualquier parte (ícono,
+        título, descripción), el usuario navega a esa sección.
+        Es un patrón común en apps modernas para mejor usabilidad.
+        
+        Las clases como mod-green, mod-amber, mod-blue controlan
+        el color de cada tarjeta desde el CSS.
+        -->
         <div class="section-title">Módulos</div>
         <div class="modules-grid">
 
+            <!-- MÓDULO 1: Clasificador -->
             <a href="/clasificador" class="module-card mod-green">
+                <!-- Ícono SVG inline — dibujado directamente en HTML.
+                    Cada módulo tiene su propio ícono con su color temático. -->
                 <div class="mod-icon-wrap green">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
                         <circle cx="12" cy="12" r="9" stroke="#52b788" stroke-width="1.4" />
@@ -101,9 +210,11 @@
                 </div>
                 <div class="mod-title">Clasificar residuo</div>
                 <div class="mod-desc">Identifica materiales con la cámara en tiempo real</div>
+                <!-- Etiqueta visual informativa (solo decorativa, sin funcionalidad) -->
                 <div class="mod-tag green-tag">IA en tiempo real</div>
             </a>
 
+            <!-- MÓDULO 2: Precios -->
             <a href="/precios" class="module-card mod-amber">
                 <div class="mod-icon-wrap amber">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
@@ -117,6 +228,7 @@
                 <div class="mod-tag amber-tag">Valorización</div>
             </a>
 
+            <!-- MÓDULO 3: Mapa -->
             <a href="/mapa" class="module-card mod-blue">
                 <div class="mod-icon-wrap blue">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
@@ -130,6 +242,7 @@
                 <div class="mod-tag blue-tag">Geolocalización</div>
             </a>
 
+            <!-- MÓDULO 4: Historial -->
             <a href="/historial" class="module-card mod-pink">
                 <div class="mod-icon-wrap pink">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
@@ -144,6 +257,7 @@
                 <div class="mod-tag pink-tag">Actividad</div>
             </a>
 
+            <!-- MÓDULO 5: Estadísticas -->
             <a href="/estadisticas" class="module-card mod-teal">
                 <div class="mod-icon-wrap teal">
                     <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
@@ -159,7 +273,9 @@
 
         </div>
 
-        <!-- Perfil y logout -->
+        <!-- PERFIL — Enlace a la página de perfil del usuario.
+        Muestra el avatar con la inicial (mismo truco que en la navbar)
+        y un ícono de flecha para indicar que lleva a otra página. -->
         <a href="/perfil" class="profile-row">
             <div class="profile-left">
                 <div class="profile-avatar">{{ nombre[0]|upper }}</div>
@@ -168,11 +284,14 @@
                     <div class="profile-sub">Editar datos personales</div>
                 </div>
             </div>
+            <!-- Ícono de flecha (chevron) que indica "hay más aquí" -->
             <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
                 <path d="M7 5l5 5-5 5" stroke="#7aaa8f" stroke-width="1.3" stroke-linecap="round" />
             </svg>
         </a>
 
+        <!-- LOGOUT — Enlace simple a /logout.
+        En app.py esa ruta ejecuta session.clear() y redirige al login. -->
         <a href="/logout" class="logout-row">
             <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
                 <path d="M13 3h4v14h-4M9 14l4-4-4-4M3 10h10" stroke="#f4845f" stroke-width="1.3" stroke-linecap="round"
@@ -183,7 +302,17 @@
 
     </main>
 
-    <!-- Botón flotante tickets -->
+    <!--
+    BOTÓN FLOTANTE (FAB — Floating Action Button)
+    
+    Un FAB es un botón fijo que "flota" sobre el contenido,
+    siempre visible sin importar el scroll. Su posición fija
+    se define en el CSS con: position: fixed; bottom: x; right: x;
+    
+    Es un patrón de diseño de Material Design muy usado en apps
+    móviles para acciones importantes que deben estar siempre
+    accesibles, en este caso: reportar un problema (tickets).
+    -->
     <a href="/mis-tickets" class="fab-ticket" title="Reportar problema">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="12" r="10" stroke="white" stroke-width="1.5" />
@@ -191,6 +320,23 @@
         </svg>
     </a>
 
+    <!--
+    SCRIPT AL FINAL DEL BODY — No en el <head>.
+    
+    CONCEPTO CLAVE — ¿Por qué aquí y no arriba?
+    El navegador lee el HTML de arriba a abajo. Si el <script>
+    estuviera en el <head>, bloquearía la carga del contenido
+    visual mientras descarga y ejecuta el JavaScript.
+    
+    Al ponerlo al FINAL del body:
+        1. El usuario ve toda la página inmediatamente
+        2. Después el JS se ejecuta sobre el HTML ya cargado
+    
+    Esto mejora el rendimiento percibido — la página "aparece"
+    más rápido aunque el JS tarde lo mismo en ejecutarse.
+    
+    dashboard.js maneja los tips rotativos y los puntos indicadores.
+    -->
     <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
 </body>
 
